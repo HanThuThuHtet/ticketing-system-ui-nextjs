@@ -12,7 +12,7 @@ export default function Index(){
   const [tickets,setTickets] = useState([]);
   useEffect(() => {
     const token = localStorage.getItem('token');
-    fetch('http://localhost:8080/api/tickets',
+    fetch('http://localhost:8000/api/tickets',
     {
       method: 'GET',
       headers:{

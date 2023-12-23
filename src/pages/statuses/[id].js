@@ -14,7 +14,7 @@ export default function Show(){
     const [status,setStatus] = useState([]);
     useEffect(() => {
         const token = localStorage.getItem('token');
-        fetch(`http://localhost:8080/api/statuses/${id}`,
+        fetch(`http://localhost:8000/api/statuses/${id}`,
         {
         method: 'GET',
         headers:{

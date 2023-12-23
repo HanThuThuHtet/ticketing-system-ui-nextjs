@@ -1,11 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -16,7 +11,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 
-const  API_URL = "http://localhost:8080/api/";
+const  API_URL = "http://localhost:8000/api/";
 const defaultTheme = createTheme();
 
 export default function Login(){
@@ -38,7 +33,7 @@ export default function Login(){
 
         let result = await axios({
             method: 'post',
-            url: 'login/',
+            url: 'login',
             baseURL: API_URL,
             data: data,
             headers: headers
