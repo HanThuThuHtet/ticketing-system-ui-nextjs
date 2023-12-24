@@ -1,5 +1,7 @@
+import BackButton from "@/components/backButton";
 import Layout from "@/components/layout";
 import { Cancel } from "@mui/icons-material";
+import { MenuItem, Select } from "@mui/material";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -102,6 +104,7 @@ export default function Update(){
 
     return (
         <Layout>
+            <BackButton/>
             <div  className="mx-auto w-full max-w-2xl border rounded-md px-6 py-4 my-8">
                 <div className="flex justify-end">
                     <Cancel 
@@ -146,11 +149,17 @@ export default function Update(){
 
                         <div className="flex items-center justify-between">
                             <label htmlFor="status_id" className="text-sm font-medium leading-6 text-black-500">
-                                Status_id
+                                Status
                             </label>
-                            <input onChange={handleStatusIdChange} 
+                            <Select
+                                onChange={handleStatusIdChange} 
                                 type="text" id="status_id" name="status_id" value={statusId} required
-                                className="w-2/3 rounded-md  border px-2 py-1.5 text-gray-900 shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-sky-300 sm:text-sm sm:leading-6"  />
+                                className="w-2/3 rounded-md  border px-2 text-gray-900 shadow-sm placeholder:text-gray-400 focus:outline-none focus:border-sky-300 sm:text-sm sm:leading-6"  
+                            >
+                                <MenuItem value={1}>New</MenuItem>
+                                <MenuItem value={2}>In Progress</MenuItem>
+                                <MenuItem value={3}>Resolved</MenuItem>
+                            </Select>
                         </div>
 
                         <div className="flex items-center justify-between">

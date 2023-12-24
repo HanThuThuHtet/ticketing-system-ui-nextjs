@@ -3,13 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import TicketTable from "@/components/ticketTable";
-
-
+import { Container, Skeleton } from "@mui/material";
 
 export default function Index(){
 
   const router = useRouter();
   const [tickets,setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     fetch('http://localhost:8000/api/tickets',
@@ -24,12 +25,24 @@ export default function Index(){
     .then(result => {
       //console.log(result.data);
       setTickets(result.data);
+      setLoading(false);
     })
     .catch(err => {
       console.log("Error Fetching Ticket:",err);
+      setLoading(false);
     })
   },[]);
   
+  if(loading){
+    return (
+     <>
+      <Skeleton variant="rectangular" width="100%" height={60} />
+      <Container className="mt-4">
+        <Skeleton variant="rectangular" width="100%" height={500} />
+      </Container>
+     </>
+    );
+}
 
   return (
     <Layout>

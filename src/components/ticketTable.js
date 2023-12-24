@@ -1,30 +1,70 @@
 import { Tab } from '@headlessui/react'
-import { Edit } from '@mui/icons-material'
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { ArrowDropDown, Edit } from '@mui/icons-material'
+import { Button, InputLabel, Menu, MenuItem, Paper, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useState } from 'react'
 import { Chip } from "@mui/material";
+import { logging } from '../../next.config'
 
-
-
-const TicketTable = ({tickets}) => {
+const TicketTable = ({ tickets }) => {
   console.log(tickets);
   const router = useRouter();
-  return (
-  <>
-    <h1 className="my-4 font-bold">
-      <Chip label={tickets.length} color="primary" className="px-1"></Chip> Tickets Found
-    </h1>
-    <TableContainer component={Paper}>
-        <Table>
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('');
 
+  const statusLabels = {
+    '': 'All',
+    1: 'New',
+    2: 'In Progress',
+    3: 'Resolved',
+  };
+
+  const handleButtonClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleStatusChange = (statusId) => {
+    setFilterStatus(statusId);
+    handleMenuClose();
+  }
+  const filteredTickets = filterStatus 
+                          ? tickets.filter((ticket) => ticket.status_id === filterStatus)
+                          : tickets;
+
+  return (
+    <>
+      <h1 className="my-4 font-bold">
+        <Chip label={filteredTickets.length} color="primary" className="px-1"></Chip> Tickets Found
+      </h1>
+      <TableContainer component={Paper}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Subject</TableCell>
               <TableCell>Customer</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>
+                <Button
+                  variant="outlined"
+                  onClick={handleButtonClick}
+                >
+                  {filterStatus ? statusLabels[filterStatus] : "Status"}
+                  <ArrowDropDown />
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem onClick={() => handleStatusChange('')}>All</MenuItem>
+                  <MenuItem onClick={() => handleStatusChange(1)}>New</MenuItem>
+                  <MenuItem onClick={() => handleStatusChange(2)}>In Progress</MenuItem>
+                  <MenuItem onClick={() => handleStatusChange(3)}>Resolved</MenuItem>
+                </Menu>
+              </TableCell>
               <TableCell>Created at</TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
@@ -32,7 +72,7 @@ const TicketTable = ({tickets}) => {
 
           <TableBody>
             {
-              tickets.map((ticket) => (
+              filteredTickets.map((ticket) => (
                 <TableRow key={ticket.id}>
                   <TableCell>
                     <Link href={`/tickets/${encodeURIComponent(ticket.id)}`}>
@@ -52,7 +92,7 @@ const TicketTable = ({tickets}) => {
                     {ticket.date}
                   </TableCell>
                   <TableCell>
-                    <Edit onClick={() => router.push(`/tickets/update/${ticket.id}`)}/>
+                    <Edit onClick={() => router.push(`/tickets/update/${ticket.id}`)} />
                     {/* <button onClick={() => router.push(`/tickets/update/${ticket.id}`)}>Update Ticket</button> */}
                   </TableCell>
                 </TableRow>
@@ -60,8 +100,8 @@ const TicketTable = ({tickets}) => {
             }
           </TableBody>
         </Table>
-    </TableContainer>
-  </>
+      </TableContainer>
+    </>
   )
 }
 

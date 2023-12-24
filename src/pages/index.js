@@ -1,7 +1,7 @@
 import Layout from "@/components/layout";
 import StatusCard from "@/components/statusCard";
 import TicketTable from "@/components/ticketTable";
-import { Container } from "@mui/material";
+import { Container, Skeleton } from "@mui/material";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 export default function Home(){
 
   const [tickets,setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     fetch('http://localhost:8000/api/tickets',
@@ -23,19 +25,30 @@ export default function Home(){
     .then(result => {
       //console.log(result.data);
       setTickets(result.data);
+      setLoading(false);
     })
     .catch(err => {
       console.log("Error Fetching Ticket:",err);
+      setLoading(false);
     })
   },[]);
 
 
-  
+  if(loading){
+    return (
+     <>
+      <Skeleton variant="rectangular" width="100%" height={60} />
+      <Container className="mt-4">
+        <Skeleton variant="rectangular" width="100%" height={500} />
+      </Container>
+     </>
+    );
+}
 
   return (
     <Layout>
       <Container sx={{display: 'flex', justifyContent: 'space-between'}} className="my-8">
-        {/* <StatusCard id={tickets}/> */}
+        <StatusCard allTickets={tickets.length} title='All'/>
         <StatusCard id='1' title='New'/>
         <StatusCard id='2' title='In-Progress'/>
         <StatusCard id='3' title='Resolved'/>
