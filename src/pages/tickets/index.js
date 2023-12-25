@@ -4,12 +4,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import TicketTable from "@/components/ticketTable";
 import { Container, Skeleton } from "@mui/material";
+import Search from "@/components/search";
 
 export default function Index(){
 
   const router = useRouter();
   const [tickets,setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filteredTickets,setFilteredTickets] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -32,6 +34,12 @@ export default function Index(){
       setLoading(false);
     })
   },[]);
+
+  const handleSearch = async (ticketId) => {
+    const searchResult = tickets.filter(ticket => String(ticket.id) === ticketId);
+    setFilteredTickets(searchResult);
+    console.log('Search Result:',searchResult);
+  }
   
   if(loading){
     return (
@@ -47,8 +55,8 @@ export default function Index(){
   return (
     <Layout>
       <div className="my-8">
-        <TicketTable tickets={tickets}/>
-        {/* <button onClick={() => router.push(`/tickets/create`)}>Create Ticket</button> */}
+        <Search onSearch={handleSearch} />
+        <TicketTable tickets={filteredTickets.length > 0 ? filteredTickets :  tickets}/>
       </div>
     </Layout>
   );
